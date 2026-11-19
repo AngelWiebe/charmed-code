@@ -15,6 +15,15 @@ npm run dev
 
 Use `npm run build` to generate the production site in `dist/` and `npm run preview` to serve that build locally.
 
+## Tests
+
+```sh
+npx playwright install chromium
+npm test
+```
+
+The suite builds and previews the production site, then checks prerendered content and search metadata, mobile keyboard navigation, and contact form validation and retry. Formspree requests are mocked. GitHub Actions runs the same suite on pull requests targeting `main` and pushes to `main`.
+
 ## Editing the site
 
 | Path | Contents |
