@@ -1,40 +1,40 @@
 # Charmed Code
 
-Marketing site for Charmed Code, a web design and development studio. A single scrolling page covers services, approach, featured work, and testimonials, with dialogs for contact, the studio story, and project details.
+Charmed Code is an Alberta web design and development studio. This single-page marketing site presents its services, approach, featured work, and testimonials, with a contact form for project inquiries.
 
-Built with React 19 and Vite 6. Content for services, projects, and testimonials lives in `src/data.js`.
+The site uses React 19 and Vite 6.
 
-## Requirements
+## Local development
 
-- Node.js 20 or newer
+Requires Node.js 20 or newer.
 
-## Scripts
-
-```bash
-npm install
-npm run dev       # local dev server
-npm run build     # production build in dist/
-npm run preview   # serve the production build
+```sh
+npm ci
+npm run dev
 ```
 
-## Layout
+Use `npm run build` to generate the production site in `dist/` and `npm run preview` to serve that build locally.
 
-| Path | Role |
+## Editing the site
+
+| Path | Contents |
 | --- | --- |
-| `index.html` | Document shell, meta description, fonts |
-| `src/main.jsx` | React entry |
-| `src/App.jsx` | Page sections and dialog state |
-| `src/data.js` | Services, projects, and testimonials |
-| `src/components/` | Header, sections, and dialogs |
-| `src/assets/` | Logo, icons, and section art |
-| `public/favicon.svg` | Favicon |
+| `src/data.js` | Services, featured projects, and testimonials |
+| `src/App.jsx` and `src/components/` | Page sections, navigation, and dialogs |
+| `src/index.css` and `src/assets/` | Styles, artwork, logo, and WebP images |
+| `index.html` | Page title, search and social metadata, and font links |
+| `public/` | Favicon, social preview image, and robots.txt |
 
-Sections, in order: hero, services, approach, featured work, testimonials, and a closing call to action.
-
-The contact form validates name, email, and message in the browser, submits them to Formspree, and confirms when Formspree accepts the submission.
+The contact form validates submissions in the browser and sends them to Formspree. It confirms receipt after Formspree accepts the submission and keeps the entered text if sending fails. Preview builds use the same endpoint as production, so a successful local submission can create a real inquiry.
 
 ## Deployment
 
-The production build prerenders the homepage into `dist/index.html`. React attaches the interactive behavior when JavaScript loads.
+Set `SITE_ORIGIN` to the public origin in the hosting provider's build environment. Use the full HTTPS origin without a path.
 
-Set `SITE_ORIGIN` to the public site origin at build time. Vite uses it for the canonical URL, social preview URLs, and structured data, and adds a sitemap and its robots.txt entry.
+```sh
+SITE_ORIGIN=https://your-domain.example npm run build
+```
+
+Publish `dist/` to a static host. The build writes the homepage content into `dist/index.html`, and React enables navigation and dialogs when JavaScript loads.
+
+With `SITE_ORIGIN` set, the build emits absolute canonical, social preview, and structured data URLs, generates `sitemap.xml`, and adds its URL to `robots.txt`. Without it, builds use relative URLs and omit the sitemap.
