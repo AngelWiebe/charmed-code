@@ -21,6 +21,14 @@ test('production HTML contains homepage content and public search metadata', asy
   expect(await robots.text()).toContain('Sitemap: ' + siteOrigin + '/sitemap.xml')
 })
 
+test('mobile viewport is established before the responsive image preload', async ({ request }) => {
+  const response = await request.get('/')
+  await expect(response).toBeOK()
+  const html = await response.text()
+
+  expect(html).toMatch(/<meta name="viewport"[^>]*>[\s\S]*<link rel="preload"[^>]*hero-background-mobile/)
+})
+
 test('mobile menu returns focus on Escape and moves focus to the chosen section', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 })
   await page.goto('/')
