@@ -8,7 +8,7 @@ export default function Work({ onOpen }) {
         <div className="work-head">
           <div>
             <p className="section-kicker">Featured work</p>
-            <h2 id="work-title" className="nav-target" tabIndex={-1}>Real Businesses. Enchanted Results.</h2>
+            <h2 id="work-title" className="nav-target" tabIndex={-1}>Real Businesses. Charmed Results.</h2>
           </div>
         </div>
         <ul className="work-grid">
@@ -25,6 +25,7 @@ export default function Work({ onOpen }) {
                   <Preview />
                   <h3>{project.name}</h3>
                   <p>{project.tags}</p>
+                  <p className="work-summary">{project.summary}</p>
                 </button>
               </li>
             )

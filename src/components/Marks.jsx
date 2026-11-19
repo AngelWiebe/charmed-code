@@ -1,3 +1,6 @@
+import dlrLogo from '../assets/dlr-logo.webp'
+import dlrHandshake from '../assets/dlr-handshake.webp'
+
 export function Star({ className }) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
@@ -107,19 +110,30 @@ export function WillowPreview() {
   )
 }
 
-export function SummitPreview() {
+export function DlrPreview() {
   return (
-    <div className="mock mock-summit" aria-hidden="true">
-      <MockBar dark links={['About', 'Programs', 'Journal']} />
-      <div className="summit-stage">
-        <div className="summit-moon" />
-        <p className="summit-kicker">Summit Wellbeing</p>
-        <strong>A Calmer, Stronger You</strong>
-        <svg className="summit-peaks" viewBox="0 0 400 150" preserveAspectRatio="none" aria-hidden="true">
-          <polygon points="0,150 0,78 70,36 130,92 190,18 260,84 330,40 400,96 400,150" fill="#314864" />
-          <polygon points="0,150 30,110 100,132 170,70 250,128 320,86 400,120 400,150" fill="#1c2c44" />
-          <polygon points="168,74 190,22 214,74" fill="#e8eef4" opacity="0.85" />
-        </svg>
+    <div className="mock mock-dlr" aria-hidden="true">
+      <div className="dlr-bar">
+        <img className="dlr-logo" src={dlrLogo} loading="lazy" alt="" />
+        <span className="is-current">Home</span>
+        <span>Services</span>
+        <span>Who We Work With</span>
+        <span>Payment Terms</span>
+        <span className="dlr-pill">Get in Touch</span>
+      </div>
+      <div className="dlr-hero">
+        <div className="dlr-copy">
+          <p className="dlr-kicker">Professional negotiation solutions</p>
+          <strong>
+            <span>Find a Better</span>
+            <span className="is-accent">Outcome</span>
+            <span>Together</span>
+          </strong>
+          <p className="dlr-body">Professional negotiation support for individuals and businesses.</p>
+        </div>
+        <div className="dlr-photo">
+          <img src={dlrHandshake} loading="lazy" alt="" />
+        </div>
       </div>
     </div>
   )
@@ -150,6 +164,6 @@ export function WhiskPreview() {
 
 export const previews = {
   willow: WillowPreview,
-  summit: SummitPreview,
+  dlr: DlrPreview,
   whisk: WhiskPreview,
 }

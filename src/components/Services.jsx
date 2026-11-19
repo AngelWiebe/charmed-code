@@ -20,7 +20,7 @@ export default function Services() {
         <ul className="services-grid">
           {services.map((service) => (
             <li key={service.title} className="service">
-              <img src={service.icon} alt="" />
+              <img src={service.icon} loading="lazy" alt="" />
               <h3>{service.title}</h3>
               <p>{service.copy}</p>
             </li>

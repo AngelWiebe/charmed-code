@@ -1,6 +1,6 @@
-# Enchanted Code
+# Charmed Code
 
-Marketing site for Enchanted Code, a web design and development studio. A single scrolling page covers services, approach, featured work, and testimonials, with dialogs for contact, the studio story, and project details.
+Marketing site for Charmed Code, a web design and development studio. A single scrolling page covers services, approach, featured work, and testimonials, with dialogs for contact, the studio story, and project details.
 
 Built with React 19 and Vite 6. Content for services, projects, and testimonials lives in `src/data.js`.
 
@@ -31,4 +31,10 @@ npm run preview   # serve the production build
 
 Sections, in order: hero, services, approach, featured work, testimonials, and a closing call to action.
 
-The contact form validates name, email, and message in the browser and shows a confirmation. It does not send the message anywhere.
+The contact form validates name, email, and message in the browser, submits them to Formspree, and confirms when Formspree accepts the submission.
+
+## Deployment
+
+The production build prerenders the homepage into `dist/index.html`. React attaches the interactive behavior when JavaScript loads.
+
+Set `SITE_ORIGIN` to the public site origin at build time. Vite uses it for the canonical URL, social preview URLs, and structured data, and adds a sitemap and its robots.txt entry.

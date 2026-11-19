@@ -177,6 +177,9 @@ export function ContactModal({ onClose, restoreRef }) {
   const [values, setValues] = useState({ name: '', email: '', message: '' })
   const [errors, setErrors] = useState({})
   const [sent, setSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const submittingRef = useRef(false)
   const nameRef = useRef(null)
   const emailRef = useRef(null)
   const messageRef = useRef(null)
@@ -198,8 +201,10 @@ export function ContactModal({ onClose, restoreRef }) {
     setValues((current) => ({ ...current, [name]: value }))
   }
 
-  function submit(event) {
+  async function submit(event) {
     event.preventDefault()
+    if (submittingRef.current) return
+    setSubmitError('')
     const next = {}
     if (!values.name.trim()) next.name = 'Please enter your name.'
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) {
@@ -212,7 +217,29 @@ export function ContactModal({ onClose, restoreRef }) {
     if (next.name) nameRef.current?.focus()
     else if (next.email) emailRef.current?.focus()
     else if (next.message) messageRef.current?.focus()
-    else setSent(true)
+    if (Object.keys(next).length) return
+
+    const form = event.currentTarget
+    const body = new FormData(form)
+    submittingRef.current = true
+    setSubmitting(true)
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body,
+      })
+
+      if (response.ok) setSent(true)
+      else if (response.status === 429) setSubmitError('Too many attempts. Please wait a minute and try again.')
+      else setSubmitError('Your message could not be sent. Please try again.')
+    } catch {
+      setSubmitError('Your message could not be sent. Please try again.')
+    } finally {
+      submittingRef.current = false
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -228,7 +255,7 @@ export function ContactModal({ onClose, restoreRef }) {
           </button>
         </div>
       ) : (
-        <form className="contact-form" onSubmit={submit} noValidate>
+        <form className="contact-form" action="https://formspree.io/f/xppdrney" method="post" onSubmit={submit} noValidate>
           <div className="field">
             <label htmlFor={nameId}>Name</label>
             <input
@@ -279,8 +306,9 @@ export function ContactModal({ onClose, restoreRef }) {
               <p id={messageErrorId} className="field-error" role="alert">{errors.message}</p>
             )}
           </div>
-          <button className="btn btn-gold" type="submit">
-            Send message <span aria-hidden="true">→</span>
+          {submitError && <p className="field-error" role="alert">{submitError}</p>}
+          <button className="btn btn-gold" type="submit" disabled={submitting}>
+            {submitting ? 'Sending…' : 'Send message'} <span aria-hidden="true">→</span>
           </button>
         </form>
       )}
@@ -293,7 +321,7 @@ export function StoryModal({ onClose, restoreRef }) {
     <Shell title="A studio for imaginative work." kicker="Our story" onClose={onClose} restoreRef={restoreRef}>
       <div className="story">
         <p>
-          Enchanted Code started with a simple belief: a website should feel like the brand it
+          Charmed Code started with a simple belief: a website should feel like the brand it
           represents. Not a template with the colors swapped, and not a spectacle that forgets the
           person trying to find their way.
         </p>
@@ -316,7 +344,7 @@ export function PrivacyModal({ onClose, restoreRef }) {
         <section>
           <h3>1. Introduction</h3>
           <p>
-            Welcome to Enchanted Code, a brand operated by 2734539 Alberta Ltd., based in Alberta, Canada.
+            Welcome to Charmed Code, a brand operated by 2734539 Alberta Ltd., based in Alberta, Canada.
           </p>
           <p>
             We respect your privacy and are committed to protecting any personal information you share with us.
@@ -360,7 +388,7 @@ export function PrivacyModal({ onClose, restoreRef }) {
         <section>
           <h3>4. Cookies and Tracking Technologies</h3>
           <p>
-            Enchanted Code does not intentionally use advertising cookies, analytics trackers, or third-party
+            Charmed Code does not intentionally use advertising cookies, analytics trackers, or third-party
             marketing tools.
           </p>
           <p>
@@ -449,7 +477,7 @@ export function PrivacyModal({ onClose, restoreRef }) {
             For questions, concerns, or requests regarding this Privacy Policy, please contact:
           </p>
           <p className="policy-contact">
-            <strong>Enchanted Code</strong>
+            <strong>Charmed Code</strong>
             <br />
             Operated by 2734539 Alberta Ltd.
             <br />
@@ -473,6 +501,13 @@ export function ProjectModal({ project, onClose, restoreRef }) {
         <Preview />
         <p className="project-tags">{project.tags}</p>
         <p>{project.summary}</p>
+        {project.url && (
+          <p>
+            <a className="project-link" href={project.url} target="_blank" rel="noreferrer">
+              Visit the site
+            </a>
+          </p>
+        )}
       </div>
     </Shell>
   )

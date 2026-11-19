@@ -8,7 +8,7 @@ export default function Cta({ onContact, onPrivacy }) {
           Get in Touch <span aria-hidden="true">→</span>
         </button>
         <p className="legal">
-          © 2026 Enchanted Code. All rights reserved.
+          © 2026 Charmed Code. All rights reserved.
           <br />
           A brand of 2734539 Alberta Ltd. · Alberta, Canada
           <br />

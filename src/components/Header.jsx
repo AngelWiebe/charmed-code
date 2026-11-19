@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import logo from '../assets/logo.png'
+import logo from '../assets/logo.webp'
 
 function pageScroll() {
   const { body } = document
@@ -33,9 +33,14 @@ export default function Header({ onNavigate, onContact, inert }) {
       setSolid(scrollY > 24)
 
       if (pinned.current) {
+        const anchor = document.getElementById(pinned.current)?.querySelector('.section-kicker')
+          ?? document.getElementById(pinned.current)
+        const offset = Number.parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue('--nav-scroll-offset'),
+        ) || 94
         const settled = pinned.current === 'top'
           ? scrollY < 4
-          : Math.abs((document.getElementById(pinned.current)?.getBoundingClientRect().top ?? 0) - 88) < 48
+          : Math.abs((anchor?.getBoundingClientRect().top ?? 0) - offset) < 36
         if (!settled) {
           setActive(pinned.current)
           return
@@ -88,7 +93,7 @@ export default function Header({ onNavigate, onContact, inert }) {
     setOpen(false)
     pinned.current = id
     setActive(id)
-    onNavigate(id)
+    onNavigate(id, { focus: open })
   }
 
   function onHeaderBlur(event) {
@@ -104,7 +109,7 @@ export default function Header({ onNavigate, onContact, inert }) {
       onBlur={onHeaderBlur}
       inert={inert}
     >
-      <a className="logo-btn" href="#top" onClick={(event) => { event.preventDefault(); navigate('top') }} aria-label="Enchanted Code, home">
+      <a className="logo-btn" href="#top" onClick={(event) => { event.preventDefault(); navigate('top') }} aria-label="Charmed Code, home">
         <img src={logo} alt="" />
       </a>
 

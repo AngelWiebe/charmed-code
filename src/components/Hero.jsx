@@ -3,7 +3,7 @@ export default function Hero({ onContact }) {
     <section className="hero" id="top" aria-labelledby="top-title">
       <div className="hero-inner">
         <p className="hero-kicker">Ideas. Crafted. Magical Results.</p>
-        <h1 id="top-title" className="nav-target" tabIndex={-1}>Enchanted Code</h1>
+        <h1 id="top-title" className="nav-target" tabIndex={-1}>Charmed Code</h1>
         <p className="hero-lede">
           Beautiful, functional digital experiences
           <br /> for a more imaginative world.

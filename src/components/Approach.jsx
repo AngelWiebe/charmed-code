@@ -1,4 +1,4 @@
-import orb from '../assets/about-magical-orb.png'
+import orb from '../assets/about-magical-orb.webp'
 import { Star } from './Marks'
 
 export default function Approach({ onStory }) {
@@ -11,6 +11,7 @@ export default function Approach({ onStory }) {
         <div className="approach-visual">
           <img
             src={orb}
+            loading="lazy"
             alt="A hand reaching toward a glowing moon resting on a stack of old books"
           />
         </div>

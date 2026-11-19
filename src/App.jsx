@@ -37,11 +37,22 @@ export default function App() {
   const closePrivacy = useCallback(() => setPrivacyOpen(false), [])
   const closeProject = useCallback(() => setProject(null), [])
 
-  const navigate = useCallback((target) => {
+  const navigate = useCallback((target, { focus = false } = {}) => {
     const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
-    if (target === 'top') window.scrollTo({ top: 0, behavior })
-    else document.getElementById(target)?.scrollIntoView({ behavior })
-    document.getElementById(`${target}-title`)?.focus({ preventScroll: true })
+    if (target === 'top') {
+      window.scrollTo({ top: 0, behavior })
+    } else {
+      const section = document.getElementById(target)
+      const anchor = section?.querySelector('.section-kicker') ?? section
+      if (anchor) {
+        const offset = Number.parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue('--nav-scroll-offset'),
+        ) || 94
+        const top = anchor.getBoundingClientRect().top + window.scrollY - offset
+        window.scrollTo({ top: Math.max(0, top), behavior })
+      }
+    }
+    if (focus) document.getElementById(`${target}-title`)?.focus({ preventScroll: true })
   }, [])
 
   return (
@@ -50,7 +61,7 @@ export default function App() {
         className="skip-link"
         href="#top-title"
         inert={modalOpen || undefined}
-        onClick={(event) => { event.preventDefault(); navigate('top') }}
+        onClick={(event) => { event.preventDefault(); navigate('top', { focus: true }) }}
       >
         Skip to main content
       </a>

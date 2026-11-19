@@ -13,6 +13,7 @@
   --sans: "Outfit", "Avenir Next", "Segoe UI", sans-serif;
   --gutter: clamp(20px, 5vw, 72px);
   --header: 92px;
+  --nav-scroll-offset: 94px;
   color-scheme: light;
 }
 
@@ -24,7 +25,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 96px;
+  scroll-padding-top: var(--nav-scroll-offset);
 }
 
 body {
@@ -245,10 +246,10 @@ ul {
   padding: 11px 10px;
 }
 
-#services,
-#about,
-#work {
-  scroll-margin-top: 88px;
+#services .section-kicker,
+#about .section-kicker,
+#work .section-kicker {
+  scroll-margin-top: var(--nav-scroll-offset);
 }
 
 .menu-toggle span:not(.sr-only) {
@@ -280,7 +281,7 @@ ul {
   padding: 158px var(--gutter) 90px;
   background:
     linear-gradient(90deg, rgba(8, 10, 18, 0.84) 0%, rgba(8, 10, 18, 0.55) 34%, rgba(8, 10, 18, 0.12) 56%, rgba(8, 10, 18, 0.2) 100%),
-    url("./assets/hero-background.png") center 42% / cover no-repeat;
+    url("./assets/hero-background.webp") center 42% / cover no-repeat;
   color: #f7f1e6;
   background-color: #101426;
 }
@@ -508,6 +509,12 @@ ul {
   font-size: 0.95rem;
 }
 
+.work-card .work-summary {
+  margin-top: 10px;
+  color: var(--ink);
+  line-height: 1.55;
+}
+
 .mock {
   height: 230px;
   border-radius: 16px;
@@ -594,53 +601,114 @@ ul {
   color: #6d624e;
 }
 
-.mock-summit {
-  background: #152238;
+.mock-dlr {
+  display: flex;
+  flex-direction: column;
+  background: #101820;
+  color: #f7f4ef;
+  font-family: var(--sans);
 }
 
-.summit-stage {
-  position: relative;
-  height: calc(100% - 32px);
-  padding: 22px 20px 0;
-  background: linear-gradient(180deg, #243656 0%, #4e6c8d 58%, #d8c7b0 100%);
-  color: #f7f3ea;
-}
-
-.summit-moon {
-  position: absolute;
-  top: 18px;
-  right: 28px;
-  width: 28px;
+.dlr-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
   height: 28px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #fff, #f0e2c0 60%, #d7c49a);
-  box-shadow: 0 0 18px rgba(255, 244, 220, 0.45);
+  padding: 0 8px;
+  background: #101820;
+  font-size: 6.5px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
-.summit-kicker {
+.dlr-logo {
+  height: 18px;
+  width: auto;
+}
+
+.dlr-bar span {
+  color: #f4efe8;
+}
+
+.dlr-bar .is-current {
+  color: #e08a3c;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.dlr-pill {
+  margin-left: auto;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #c9843a;
+  color: #fff;
+  font-size: 6px;
+}
+
+.dlr-hero {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  flex: 1;
+  min-height: 0;
+}
+
+.dlr-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 10px 8px;
+  background: #141c28;
+}
+
+.mock-dlr .dlr-kicker {
   margin: 0 0 6px;
-  font-size: 0.68rem;
-  letter-spacing: 0.2em;
+  font-size: 6px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(247, 243, 234, 0.8);
+  color: #e08a3c;
 }
 
-.summit-stage strong {
+.dlr-copy strong {
   display: block;
-  max-width: 12ch;
-  font-family: var(--serif);
-  font-size: 1.55rem;
-  font-weight: 500;
-  line-height: 1.1;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.02;
+  text-transform: uppercase;
 }
 
-.summit-peaks {
+.dlr-copy strong span {
+  display: block;
+  color: #fff;
+}
+
+.dlr-copy strong .is-accent {
+  color: #e39a3c;
+}
+
+.mock-dlr .dlr-body {
+  margin: 6px 0 0;
+  max-width: 22ch;
+  font-size: 6.5px;
+  line-height: 1.35;
+  color: #c5cad1;
+}
+
+.dlr-photo {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.dlr-photo img {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   width: 100%;
-  height: 92px;
+  height: 100%;
+  object-fit: cover;
+  object-position: 62% center;
 }
 
 .mock-whisk {
@@ -816,7 +884,7 @@ ul {
   color: #fbf7f0;
   background:
     linear-gradient(180deg, rgba(8, 10, 24, 0.18), rgba(8, 10, 24, 0.28)),
-    url("./assets/footer-background.png") center / cover no-repeat;
+    url("./assets/footer-background.webp") center / cover no-repeat;
   background-color: #141833;
 }
 
@@ -1007,6 +1075,14 @@ ul {
   font-size: 0.92rem;
 }
 
+.project-link {
+  display: inline-block;
+  margin-top: 14px;
+  color: var(--gold-ink);
+  font-weight: 500;
+  text-underline-offset: 3px;
+}
+
 .project-modal .mock {
   height: 250px;
 }
@@ -1091,13 +1167,14 @@ ul {
     position: absolute;
     top: calc(100% + 8px);
     right: 16px;
-    left: 16px;
+    left: auto;
+    width: min(220px, calc(100vw - 32px));
     display: none;
     flex-direction: column;
     align-items: stretch;
-    gap: 8px;
-    padding: 16px;
-    border-radius: 18px;
+    gap: 2px;
+    padding: 8px 14px 12px;
+    border-radius: 16px;
     background: rgba(12, 16, 32, 0.97);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
   }
@@ -1113,8 +1190,16 @@ ul {
   }
 
   .nav-link {
-    font-size: 1.3rem;
-    padding: 8px 4px;
+    font-size: 1.12rem;
+    padding: 6px 2px;
+  }
+
+  .header-actions .btn-line {
+    align-self: center;
+    width: auto;
+    margin-top: 8px;
+    padding: 7px 16px;
+    font-size: 0.95rem;
   }
 
   .services-grid {
@@ -1146,7 +1231,7 @@ ul {
     padding-top: 124px;
     background:
       linear-gradient(180deg, rgba(8, 10, 18, 0.82), rgba(8, 10, 18, 0.74) 60%, rgba(8, 10, 18, 0.68)),
-      url("./assets/hero-background.png") 72% center / cover no-repeat;
+      url("./assets/hero-background.webp") 72% center / cover no-repeat;
   }
 
   .hero-lede br,
@@ -1206,6 +1291,14 @@ html.is-scroll-locked .site-header {
 
 html.is-scroll-locked body {
   padding-right: var(--scroll-lock-gutter, 0px);
+}
+
+@media (max-width: 680px) and (max-aspect-ratio: 9/10) {
+  .hero {
+    background-image:
+      linear-gradient(180deg, rgba(8, 10, 18, 0.82), rgba(8, 10, 18, 0.74) 60%, rgba(8, 10, 18, 0.68)),
+      url("./assets/hero-background-mobile.webp");
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {

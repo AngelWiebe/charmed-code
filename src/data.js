@@ -1,7 +1,7 @@
-import designIcon from './assets/web-design-icon.png'
-import developmentIcon from './assets/web-development-icon.png'
-import strategyIcon from './assets/strategy-icon.png'
-import supportIcon from './assets/support-icon.png'
+import designIcon from './assets/web-design-icon.webp'
+import developmentIcon from './assets/web-development-icon.webp'
+import strategyIcon from './assets/strategy-icon.webp'
+import supportIcon from './assets/support-icon.webp'
 
 export const services = [
   {
@@ -35,11 +35,12 @@ export const projects = [
       'A botanical shop needed a home as considered as the plants on its shelves. We shaped the brand, the storefront, and a calm path from browsing to checkout.',
   },
   {
-    id: 'summit',
-    name: 'Summit Wellbeing',
+    id: 'dlr',
+    name: 'DLR Consulting Ltd.',
     tags: 'Web Design, Development',
+    url: 'https://dlrconsulting.ca/',
     summary:
-      'Summit wanted a digital space with the same steadiness as their coaching. The site pairs a quiet visual language with a clear path from first visit to booking.',
+      'A negotiation practice needed a site as direct as the work. We built a dark, quiet page that leads with the outcome, then the services.',
   },
   {
     id: 'whisk',
@@ -53,7 +54,7 @@ export const projects = [
 export const testimonials = [
   {
     quote:
-      'Enchanted Code took our scattered ideas and turned them into a stunning, easy-to-use website. They were professional, creative, and an absolute joy to work with.',
+      'They were professional, creative, and an absolute joy to work with.',
     name: 'Sarah M., Founder of Willow & Pine',
   },
   {
