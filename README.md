@@ -41,7 +41,7 @@ The contact form validates submissions in the browser and sends them to Formspre
 Set `SITE_ORIGIN` to the public origin in the hosting provider's build environment. Use the full HTTPS origin without a path.
 
 ```sh
-SITE_ORIGIN=https://your-domain.example npm run build
+SITE_ORIGIN=https://charmedcode.ca npm run build
 ```
 
 Publish `dist/` to a static host. The build writes the homepage content into `dist/index.html`, and React enables navigation and dialogs when JavaScript loads.

@@ -229,13 +229,18 @@ export function ContactModal({ onClose, restoreRef }) {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body,
+        signal: AbortSignal.timeout(15_000),
       })
 
       if (response.ok) setSent(true)
       else if (response.status === 429) setSubmitError('Too many attempts. Please wait a minute and try again.')
       else setSubmitError('Your message could not be sent. Please try again.')
-    } catch {
-      setSubmitError('Your message could not be sent. Please try again.')
+    } catch (error) {
+      setSubmitError(
+        error.name === 'TimeoutError'
+          ? 'Sending timed out. We couldn’t confirm delivery. Your message is still here if you want to try again.'
+          : 'Your message could not be sent. Please try again.',
+      )
     } finally {
       submittingRef.current = false
       setSubmitting(false)
@@ -359,13 +364,19 @@ export function PrivacyModal({ onClose, restoreRef }) {
             Our website does not require visitors to create accounts or provide personal information to browse
             its content.
           </p>
-          <p>We may collect personal information when you voluntarily contact us by email, including:</p>
+          <p>
+            We may collect personal information when you contact us by email or submit our contact form, including:
+          </p>
           <ul>
             <li>Your name and email address</li>
             <li>Your company or organization name, if provided</li>
             <li>Information about your project or inquiry</li>
             <li>Any additional information you choose to share</li>
           </ul>
+          <p>
+            We use Formspree to process contact form submissions. When you submit the form, your name, email
+            address, and message are sent to Formspree so we can receive and respond to your inquiry.
+          </p>
           <p>
             Our website is hosted using GitHub Pages. GitHub may automatically process technical information,
             such as IP addresses and browser information, to operate, maintain, and secure its hosting services.
@@ -485,7 +496,7 @@ export function PrivacyModal({ onClose, restoreRef }) {
           </p>
           <p>
             <strong>Email:</strong>{' '}
-            <a href="mailto:angel.wiebe.91@gmail.com">angel.wiebe.91@gmail.com</a>
+            <a href="mailto:info@charmedcode.ca">info@charmedcode.ca</a>
           </p>
         </section>
       </div>

@@ -3,7 +3,16 @@ import path from 'node:path'
 import { build, defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-const siteOrigin = (process.env.SITE_ORIGIN || '').replace(/\/$/, '')
+function readSiteOrigin(value) {
+  if (!value) return ''
+  const origin = URL.canParse(value) ? new URL(value) : null
+  if (!origin || !/^https?:\/\/[^/\\?#\s]+\/?$/i.test(value) || origin.username || origin.password) {
+    throw new Error('SITE_ORIGIN must be a full HTTP or HTTPS origin without a path, query, fragment, or credentials.')
+  }
+  return origin.origin
+}
+
+const siteOrigin = readSiteOrigin(process.env.SITE_ORIGIN)
 
 function seoOrigin() {
   const canonical = siteOrigin ? `${siteOrigin}/` : '/'

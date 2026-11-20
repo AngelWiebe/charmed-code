@@ -78,3 +78,23 @@ for (const { name, viewport, asset } of [
     expect(heroRequests[0].startsWith('hero-background-mobile-')).toBe(name === 'portrait mobile')
   })
 }
+
+test('footer artwork loads when the footer approaches the viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const isFooterImage = (url) => /\/footer-background-[^/]+\.webp$/.test(url)
+  const footerRequests = []
+  page.on('request', (request) => {
+    if (isFooterImage(request.url())) footerRequests.push(request.url())
+  })
+
+  await page.goto('/')
+  const artwork = page.locator('.cta-background')
+  await expect(artwork).toHaveAttribute('loading', 'lazy')
+  expect(footerRequests).toHaveLength(0)
+
+  const loaded = page.waitForResponse((response) => isFooterImage(response.url()) && response.ok())
+  await artwork.scrollIntoViewIfNeeded()
+  await loaded
+  await expect(artwork).toHaveJSProperty('complete', true)
+  expect(footerRequests).toHaveLength(1)
+})

@@ -16,8 +16,8 @@ export default function App() {
   const restoreRef = useRef(null)
   const modalOpen = contactOpen || storyOpen || privacyOpen || Boolean(project)
 
-  const openContact = useCallback((event) => {
-    restoreRef.current = event.currentTarget
+  const openContact = useCallback((event, returnFocus = event.currentTarget) => {
+    restoreRef.current = returnFocus
     setContactOpen(true)
   }, [])
   const openStory = useCallback((event) => {

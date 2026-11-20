@@ -107,3 +107,57 @@ test('contact submission disables sending while a request is pending', async ({ 
   await expect(dialog.getByRole('button', { name: 'Send message' })).toBeEnabled()
   expect(requests).toBe(1)
 })
+
+test('closing contact opened from the mobile menu returns focus to the menu toggle', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  const toggle = page.getByRole('button', { name: 'Open menu' })
+  await toggle.focus()
+  await page.keyboard.press('Enter')
+
+  const trigger = page.getByRole('banner').getByRole('button', { name: 'Get in Touch' })
+  await trigger.focus()
+  await page.keyboard.press('Enter')
+  const dialog = page.getByRole('dialog')
+  await expect(dialog.getByRole('textbox', { name: 'Name' })).toBeFocused()
+  await page.keyboard.press('Escape')
+
+  await expect(dialog).toBeHidden()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(toggle).toBeFocused()
+})
+
+test('contact submission times out and preserves the draft', async ({ page }) => {
+  await page.addInitScript(() => {
+    const timeout = AbortSignal.timeout.bind(AbortSignal)
+    AbortSignal.timeout = () => timeout(1_000)
+  })
+  let release
+  const pending = new Promise((resolve) => { release = resolve })
+  await page.route('https://formspree.io/**', async (route) => {
+    await pending
+    await route.abort('failed').catch(() => {})
+  })
+
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Let’s Create Something Magical' }).click()
+  const dialog = page.getByRole('dialog')
+  const name = dialog.getByRole('textbox', { name: 'Name' })
+  const email = dialog.getByRole('textbox', { name: 'Email' })
+  const project = dialog.getByRole('textbox', { name: 'Project' })
+  const send = dialog.getByRole('button', { name: 'Send message' })
+  await name.fill(inquiry.name)
+  await email.fill(inquiry.email)
+  await project.fill(inquiry.message)
+
+  try {
+    await send.click()
+    await expect(dialog.getByRole('alert')).toContainText('We couldn’t confirm delivery.')
+    await expect(send).toBeEnabled()
+    await expect(name).toHaveValue(inquiry.name)
+    await expect(email).toHaveValue(inquiry.email)
+    await expect(project).toHaveValue(inquiry.message)
+  } finally {
+    release()
+  }
+})

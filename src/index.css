@@ -882,10 +882,30 @@ ul {
   padding: 72px 20px;
   text-align: center;
   color: #fbf7f0;
-  background:
-    linear-gradient(180deg, rgba(8, 10, 24, 0.18), rgba(8, 10, 24, 0.28)),
-    url("./assets/footer-background.webp") center / cover no-repeat;
   background-color: #141833;
+}
+
+.cta-background,
+.cta::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cta-background {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cta::after {
+  content: "";
+  background: linear-gradient(180deg, rgba(8, 10, 24, 0.18), rgba(8, 10, 24, 0.28));
+}
+
+.cta-inner {
+  position: relative;
+  z-index: 1;
 }
 
 .cta .section-kicker {

@@ -1,6 +1,9 @@
+import footerBackground from '../assets/footer-background.webp'
+
 export default function Cta({ onContact, onPrivacy }) {
   return (
     <footer className="cta" aria-labelledby="cta-title">
+      <img className="cta-background" src={footerBackground} alt="" loading="lazy" />
       <div className="cta-inner">
         <p className="section-kicker">Ready to get started?</p>
         <h2 id="cta-title">Let’s Build Something Amazing.</h2>

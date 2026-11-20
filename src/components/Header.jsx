@@ -147,7 +147,10 @@ export default function Header({ onNavigate, onContact, inert }) {
             ))}
           </ul>
         </nav>
-        <button className="btn btn-line" type="button" aria-haspopup="dialog" onClick={onContact}>
+        <button className="btn btn-line" type="button" aria-haspopup="dialog" onClick={(event) => {
+          if (open) setOpen(false)
+          onContact(event, open ? toggleRef.current : event.currentTarget)
+        }}>
           Get in Touch
         </button>
       </div>
