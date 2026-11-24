@@ -1,3 +1,4 @@
+import { useLanguage } from '../language'
 import { useEffect, useRef, useState } from 'react'
 import logo from '../assets/logo.webp'
 import { navigationLinks } from '../data'
@@ -12,6 +13,7 @@ function pageScroll() {
 }
 
 export default function Header({ onNavigate, onContact, inert }) {
+  const { locale, setLocale, t } = useLanguage()
   const [solid, setSolid] = useState(false)
   const [active, setActive] = useState('top')
   const [open, setOpen] = useState(false)
@@ -108,7 +110,7 @@ export default function Header({ onNavigate, onContact, inert }) {
       onBlur={onHeaderBlur}
       inert={inert}
     >
-      <a className="logo-btn" href="#top" onClick={(event) => { event.preventDefault(); navigate('top') }} aria-label="Charmed Code, home">
+      <a className="logo-btn" href="#top" onClick={(event) => { event.preventDefault(); navigate('top') }} aria-label={t("Charmed Code, home")}>
         <img src={logo} alt="" />
       </a>
 
@@ -123,11 +125,11 @@ export default function Header({ onNavigate, onContact, inert }) {
         <span />
         <span />
         <span />
-        <span className="sr-only">{open ? 'Close menu' : 'Open menu'}</span>
+        <span className="sr-only">{open ? t('Close menu') : t('Open menu')}</span>
       </button>
 
       <div className={open ? 'header-actions is-open' : 'header-actions'} id="site-nav">
-        <nav aria-label="Primary">
+        <nav aria-label={t("Primary")}>
           <ul>
             {navigationLinks.map((link) => (
               <li key={link.id}>
@@ -140,7 +142,7 @@ export default function Header({ onNavigate, onContact, inert }) {
                   }}
                   aria-current={active === link.id ? 'true' : undefined}
                 >
-                  {link.label}
+                  {t(link.label)}
                 </a>
               </li>
             ))}
@@ -150,7 +152,15 @@ export default function Header({ onNavigate, onContact, inert }) {
           if (open) setOpen(false)
           onContact(event, open ? toggleRef.current : event.currentTarget)
         }}>
-          Get in Touch
+          {t("Get in Touch")}
+        </button>
+        <button
+          className="language-switch"
+          type="button"
+          lang={locale === 'en' ? 'fr-CA' : 'en'}
+          onClick={() => setLocale(locale === 'en' ? 'fr-CA' : 'en')}
+        >
+          {locale === 'en' ? 'Français' : 'English'}
         </button>
       </div>
     </header>

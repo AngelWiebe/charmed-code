@@ -1,3 +1,4 @@
+import { LanguageProvider, useLanguage } from './language'
 import { useCallback, useRef, useState } from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
@@ -9,14 +10,15 @@ import Testimonials from './components/Testimonials'
 import Cta from './components/Cta'
 import { ContactModal, PrivacyModal, ProjectModal, StoryModal } from './components/Modals'
 
-export default function App() {
+function Site() {
+  const { locale, t } = useLanguage()
   const [contactOpen, setContactOpen] = useState(false)
   const [storyOpen, setStoryOpen] = useState(false)
   const [privacyOpen, setPrivacyOpen] = useState(false)
   const [project, setProject] = useState(null)
   const [workVisits, setWorkVisits] = useState(0)
   const mainRef = useRef(null)
-  useCastleMotion(mainRef)
+  useCastleMotion(mainRef, locale)
   const restoreRef = useRef(null)
   const modalOpen = contactOpen || storyOpen || privacyOpen || Boolean(project)
 
@@ -69,7 +71,7 @@ export default function App() {
         inert={modalOpen || undefined}
         onClick={(event) => { event.preventDefault(); navigate('top', { focus: true }) }}
       >
-        Skip to main content
+        {t("Skip to main content")}
       </a>
       <Header inert={modalOpen || undefined} onNavigate={navigate} onContact={openContact} />
       <main ref={mainRef} id="main" inert={modalOpen || undefined}>
@@ -89,4 +91,8 @@ export default function App() {
       {project && <ProjectModal project={project} onClose={closeProject} restoreRef={restoreRef} />}
     </>
   )
+}
+
+export default function App() {
+  return <LanguageProvider><Site /></LanguageProvider>
 }

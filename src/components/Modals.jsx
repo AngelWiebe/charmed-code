@@ -1,3 +1,4 @@
+import { useLanguage } from '../language'
 import { useEffect, useId, useRef, useState } from 'react'
 import { previews } from './Marks'
 
@@ -142,6 +143,7 @@ function useModal(onClose, restoreRef) {
 }
 
 function Shell({ title, kicker, onClose, restoreRef, children, wide = false, document = false }) {
+  const { t } = useLanguage()
   const dialogRef = useModal(onClose, restoreRef)
   const titleId = useId()
   const className = ['modal', wide && 'is-wide', document && 'is-document'].filter(Boolean).join(' ')
@@ -164,7 +166,7 @@ function Shell({ title, kicker, onClose, restoreRef, children, wide = false, doc
         tabIndex={-1}
         onClick={(event) => event.stopPropagation()}
       >
-        <button type="button" className="modal-close" onClick={onClose} aria-label="Close dialog">
+        <button type="button" className="modal-close" onClick={onClose} aria-label={t("Close dialog")}>
           <span aria-hidden="true">×</span>
         </button>
         {document ? <div className="modal-scroll">{body}</div> : body}
@@ -174,6 +176,7 @@ function Shell({ title, kicker, onClose, restoreRef, children, wide = false, doc
 }
 
 export function ContactModal({ onClose, restoreRef }) {
+  const { t } = useLanguage()
   const [values, setValues] = useState({ name: '', email: '', message: '' })
   const [errors, setErrors] = useState({})
   const [sent, setSent] = useState(false)
@@ -206,16 +209,16 @@ export function ContactModal({ onClose, restoreRef }) {
     if (submittingRef.current) return
     setSubmitError('')
     const next = {}
-    if (!values.name.trim()) next.name = 'Please enter your name.'
+    if (!values.name.trim()) next.name = t("Please enter your name.")
     if (!values.email.trim()) {
-      next.email = 'Please enter your email.'
+      next.email = t("Please enter your email.")
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) {
-      next.email = 'Please enter a valid email.'
+      next.email = t("Please enter a valid email.")
     }
     if (!values.message.trim()) {
-      next.message = 'Please enter a project description.'
+      next.message = t("Please enter a project description.")
     } else if (values.message.trim().length < 10) {
-      next.message = 'Please write at least 10 characters about your project.'
+      next.message = t("Please write at least 10 characters about your project.")
     }
     setErrors(next)
     if (next.name) nameRef.current?.focus()
@@ -237,13 +240,13 @@ export function ContactModal({ onClose, restoreRef }) {
       })
 
       if (response.ok) setSent(true)
-      else if (response.status === 429) setSubmitError('Too many attempts. Please wait a minute and try again.')
-      else setSubmitError('Your message could not be sent. Please try again.')
+      else if (response.status === 429) setSubmitError(t("Too many attempts. Please wait a minute and try again."))
+      else setSubmitError(t("Your message could not be sent. Please try again."))
     } catch (error) {
       setSubmitError(
         error.name === 'TimeoutError'
-          ? 'Sending timed out. We couldn’t confirm delivery. Your message is still here if you want to try again.'
-          : 'Your message could not be sent. Please try again.',
+          ? t("Sending timed out. We couldn’t confirm delivery. Your message is still here if you want to try again.")
+          : t("Your message could not be sent. Please try again."),
       )
     } finally {
       submittingRef.current = false
@@ -252,21 +255,22 @@ export function ContactModal({ onClose, restoreRef }) {
   }
 
   return (
-    <Shell title={sent ? 'Message received.' : 'Tell us about your idea.'} kicker="Get in touch" onClose={onClose} restoreRef={restoreRef}>
+    <Shell title={sent ? t("Message received.") : t("Tell us about your idea.")} kicker={t("Get in touch")} onClose={onClose} restoreRef={restoreRef}>
       {sent ? (
         <div ref={statusRef} className="thanks" role="status" tabIndex={-1}>
           <p>
-            Thank you, {values.name.trim().split(' ')[0]}. We read every note, and we’ll write back
-            about what you’re building.
+            {t('Thank you, {name}. We read every note, and we’ll write back about what you’re building.', {
+              name: values.name.trim().split(/\s+/)[0],
+            })}
           </p>
           <button className="btn btn-gold" type="button" onClick={onClose}>
-            Close
+            {t("Close")}
           </button>
         </div>
       ) : (
         <form className="contact-form" action="https://formspree.io/f/xppdrney" method="post" onSubmit={submit} noValidate>
           <div className="field">
-            <label htmlFor={nameId}>Name <span aria-hidden="true">(required)</span></label>
+            <label htmlFor={nameId}>{t("Name")} <span aria-hidden="true">{t("(required)")}</span></label>
             <input
               ref={nameRef}
               id={nameId}
@@ -282,7 +286,7 @@ export function ContactModal({ onClose, restoreRef }) {
             {errors.name && <p id={nameErrorId} className="field-error" role="alert">{errors.name}</p>}
           </div>
           <div className="field">
-            <label htmlFor={emailId}>Email <span aria-hidden="true">(required)</span></label>
+            <label htmlFor={emailId}>{t("Email")} <span aria-hidden="true">{t("(required)")}</span></label>
             <input
               ref={emailRef}
               id={emailId}
@@ -298,8 +302,8 @@ export function ContactModal({ onClose, restoreRef }) {
             {errors.email && <p id={emailErrorId} className="field-error" role="alert">{errors.email}</p>}
           </div>
           <div className="field">
-            <label htmlFor={messageId}>Project description <span aria-hidden="true">(required)</span></label>
-            <p id={messageHintId} className="field-hint">At least 10 characters.</p>
+            <label htmlFor={messageId}>{t("Project description")} <span aria-hidden="true">{t("(required)")}</span></label>
+            <p id={messageHintId} className="field-hint">{t("At least 10 characters.")}</p>
             <textarea
               ref={messageRef}
               id={messageId}
@@ -318,7 +322,7 @@ export function ContactModal({ onClose, restoreRef }) {
           </div>
           {submitError && <p className="field-error" role="alert">{submitError}</p>}
           <button className="btn btn-gold" type="submit" disabled={submitting}>
-            {submitting ? 'Sending…' : 'Send message'} <span aria-hidden="true">→</span>
+            {submitting ? t("Sending…") : t("Send message")} <span aria-hidden="true">→</span>
           </button>
         </form>
       )}
@@ -327,18 +331,15 @@ export function ContactModal({ onClose, restoreRef }) {
 }
 
 export function StoryModal({ onClose, restoreRef }) {
+  const { t } = useLanguage()
   return (
-    <Shell title="A studio for imaginative work." kicker="Our story" onClose={onClose} restoreRef={restoreRef}>
+    <Shell title={t("A studio for imaginative work.")} kicker={t("Our story")} onClose={onClose} restoreRef={restoreRef}>
       <div className="story">
         <p>
-          Charmed Code started with a simple belief: a website should feel like the brand it
-          represents. Not a template with the colors swapped, and not a spectacle that forgets the
-          person trying to find their way.
+          {t("Charmed Code started with a simple belief: a website should feel like the brand it represents. Not a template with the colors swapped, and not a spectacle that forgets the person trying to find their way.")}
         </p>
         <p>
-          We partner with small businesses and thoughtful teams. Strategy, design, and code stay in
-          one conversation, from the first spark through launch and the quiet improvements that
-          come after. That is the magic we mean — care, craft, and a little wonder.
+          {t("We partner with small businesses and thoughtful teams. Strategy, design, and code stay in one conversation, from the first spark through launch and the quiet improvements that come after. That is the magic we mean — care, craft, and a little wonder.")}
         </p>
       </div>
     </Shell>
@@ -346,161 +347,145 @@ export function StoryModal({ onClose, restoreRef }) {
 }
 
 export function PrivacyModal({ onClose, restoreRef }) {
+  const { t } = useLanguage()
   return (
-    <Shell title="Privacy Policy" kicker="Legal" onClose={onClose} restoreRef={restoreRef} document>
+    <Shell title={t("Privacy Policy")} kicker={t("Legal")} onClose={onClose} restoreRef={restoreRef} document>
       <div className="policy">
-        <p className="policy-date">Effective November 5, 2026</p>
+        <p className="policy-date">{t("Effective November 5, 2026")}</p>
 
         <section>
-          <h3>1. Introduction</h3>
+          <h3>{t("1. Introduction")}</h3>
           <p>
-            Welcome to Charmed Code, a brand operated by 2734539 Alberta Ltd., based in Alberta, Canada.
+            {t("Welcome to Charmed Code, a brand operated by 2734539 Alberta Ltd., based in Alberta, Canada.")}
           </p>
           <p>
-            We respect your privacy and are committed to protecting any personal information you share with us.
-            This Privacy Policy explains how we collect, use, disclose, and protect information when you visit
-            our website or contact us.
+            {t("We respect your privacy and are committed to protecting any personal information you share with us. This Privacy Policy explains how we collect, use, disclose, and protect information when you visit our website or contact us.")}
           </p>
         </section>
 
         <section>
-          <h3>2. Information We Collect</h3>
+          <h3>{t("2. Information We Collect")}</h3>
           <p>
-            Our website does not require visitors to create accounts or provide personal information to browse
-            its content.
+            {t("Our website does not require visitors to create accounts or provide personal information to browse its content.")}
           </p>
           <p>
-            We may collect personal information when you contact us by email or submit our contact form, including:
+            {t("We may collect personal information when you contact us by email or submit our contact form, including:")}
           </p>
           <ul>
-            <li>Your name and email address</li>
-            <li>Your company or organization name, if provided</li>
-            <li>Information about your project or inquiry</li>
-            <li>Any additional information you choose to share</li>
+            <li>{t("Your name and email address")}</li>
+            <li>{t("Your company or organization name, if provided")}</li>
+            <li>{t("Information about your project or inquiry")}</li>
+            <li>{t("Any additional information you choose to share")}</li>
           </ul>
           <p>
-            We use Formspree to process contact form submissions. When you submit the form, your name, email
-            address, and message are sent to Formspree so we can receive and respond to your inquiry.
+            {t("We use Formspree to process contact form submissions. When you submit the form, your name, email address, and message are sent to Formspree so we can receive and respond to your inquiry.")}
           </p>
           <p>
-            Our website is hosted using GitHub Pages. GitHub may automatically process technical information,
-            such as IP addresses and browser information, to operate, maintain, and secure its hosting services.
+            {t("Our website is hosted using GitHub Pages. GitHub may automatically process technical information, such as IP addresses and browser information, to operate, maintain, and secure its hosting services.")}
           </p>
         </section>
 
         <section>
-          <h3>3. How We Use Your Information</h3>
-          <p>We use information you voluntarily provide to:</p>
+          <h3>{t("3. How We Use Your Information")}</h3>
+          <p>{t("We use information you voluntarily provide to:")}</p>
           <ul>
-            <li>Respond to questions and inquiries</li>
-            <li>Discuss potential projects and services</li>
-            <li>Prepare proposals and estimates</li>
-            <li>Communicate about ongoing business relationships</li>
-            <li>Meet applicable legal and regulatory obligations</li>
+            <li>{t("Respond to questions and inquiries")}</li>
+            <li>{t("Discuss potential projects and services")}</li>
+            <li>{t("Prepare proposals and estimates")}</li>
+            <li>{t("Communicate about ongoing business relationships")}</li>
+            <li>{t("Meet applicable legal and regulatory obligations")}</li>
           </ul>
-          <p>We do not sell your personal information.</p>
+          <p>{t("We do not sell your personal information.")}</p>
         </section>
 
         <section>
-          <h3>4. Cookies and Tracking Technologies</h3>
+          <h3>{t("4. Cookies and Tracking Technologies")}</h3>
           <p>
-            Charmed Code does not intentionally use advertising cookies, analytics trackers, or third-party
-            marketing tools.
+            {t("Charmed Code does not intentionally use advertising cookies, analytics trackers, or third-party marketing tools.")}
           </p>
           <p>
-            Our hosting provider or other third-party services may process technical information necessary to
-            deliver and secure the website.
+            {t("Our hosting provider or other third-party services may process technical information necessary to deliver and secure the website.")}
           </p>
           <p>
-            If we introduce analytics, cookies, or other tracking technologies in the future, we will update
-            this Privacy Policy accordingly.
-          </p>
-        </section>
-
-        <section>
-          <h3>5. Information Sharing</h3>
-          <p>We do not sell, rent, or trade your personal information.</p>
-          <p>
-            We may share information with service providers where reasonably necessary to operate our business,
-            or where disclosure is required or permitted by law.
-          </p>
-          <p>Some service providers may process or store information outside Alberta or Canada.</p>
-        </section>
-
-        <section>
-          <h3>6. Data Security</h3>
-          <p>
-            We take reasonable measures to protect personal information against unauthorized access, disclosure,
-            alteration, or loss.
-          </p>
-          <p>However, no method of electronic communication or storage is completely secure.</p>
-        </section>
-
-        <section>
-          <h3>7. Data Retention</h3>
-          <p>
-            We retain personal information only as long as reasonably necessary for the purposes described in
-            this policy, including fulfilling business obligations and complying with applicable legal
-            requirements.
-          </p>
-          <p>
-            When information is no longer required, we take reasonable steps to securely delete or anonymize it.
+            {t("If we introduce analytics, cookies, or other tracking technologies in the future, we will update this Privacy Policy accordingly.")}
           </p>
         </section>
 
         <section>
-          <h3>8. Your Privacy Rights</h3>
+          <h3>{t("5. Information Sharing")}</h3>
+          <p>{t("We do not sell, rent, or trade your personal information.")}</p>
           <p>
-            Subject to applicable laws, you may request access to personal information we hold about you or ask
-            us to correct inaccurate information.
+            {t("We may share information with service providers where reasonably necessary to operate our business, or where disclosure is required or permitted by law.")}
           </p>
-          <p>You may also contact us with questions or concerns about how your information is handled.</p>
-          <p>We will respond to privacy requests in accordance with applicable privacy legislation.</p>
+          <p>{t("Some service providers may process or store information outside Alberta or Canada.")}</p>
         </section>
 
         <section>
-          <h3>9. Third-Party Websites</h3>
+          <h3>{t("6. Data Security")}</h3>
           <p>
-            Our website may contain links to external websites, including project demonstrations, GitHub
-            repositories, or other third-party services.
+            {t("We take reasonable measures to protect personal information against unauthorized access, disclosure, alteration, or loss.")}
+          </p>
+          <p>{t("However, no method of electronic communication or storage is completely secure.")}</p>
+        </section>
+
+        <section>
+          <h3>{t("7. Data Retention")}</h3>
+          <p>
+            {t("We retain personal information only as long as reasonably necessary for the purposes described in this policy, including fulfilling business obligations and complying with applicable legal requirements.")}
           </p>
           <p>
-            We are not responsible for the privacy practices or content of those websites. We encourage visitors
-            to review their respective privacy policies.
+            {t("When information is no longer required, we take reasonable steps to securely delete or anonymize it.")}
           </p>
         </section>
 
         <section>
-          <h3>10. Children’s Privacy</h3>
+          <h3>{t("8. Your Privacy Rights")}</h3>
           <p>
-            Our website is intended for general business and professional audiences. We do not knowingly solicit
-            personal information from children.
+            {t("Subject to applicable laws, you may request access to personal information we hold about you or ask us to correct inaccurate information.")}
+          </p>
+          <p>{t("You may also contact us with questions or concerns about how your information is handled.")}</p>
+          <p>{t("We will respond to privacy requests in accordance with applicable privacy legislation.")}</p>
+        </section>
+
+        <section>
+          <h3>{t("9. Third-Party Websites")}</h3>
+          <p>
+            {t("Our website may contain links to external websites, including project demonstrations, GitHub repositories, or other third-party services.")}
+          </p>
+          <p>
+            {t("We are not responsible for the privacy practices or content of those websites. We encourage visitors to review their respective privacy policies.")}
           </p>
         </section>
 
         <section>
-          <h3>11. Changes to This Policy</h3>
+          <h3>{t("10. Children’s Privacy")}</h3>
           <p>
-            We may update this Privacy Policy periodically to reflect changes to our website, business practices,
-            or legal obligations.
+            {t("Our website is intended for general business and professional audiences. We do not knowingly solicit personal information from children.")}
           </p>
-          <p>Any updates will be published on this page with a revised effective date.</p>
         </section>
 
         <section>
-          <h3>12. Contact Us</h3>
+          <h3>{t("11. Changes to This Policy")}</h3>
           <p>
-            For questions, concerns, or requests regarding this Privacy Policy, please contact:
+            {t("We may update this Privacy Policy periodically to reflect changes to our website, business practices, or legal obligations.")}
+          </p>
+          <p>{t("Any updates will be published on this page with a revised effective date.")}</p>
+        </section>
+
+        <section>
+          <h3>{t("12. Contact Us")}</h3>
+          <p>
+            {t("For questions, concerns, or requests regarding this Privacy Policy, please contact:")}
           </p>
           <p className="policy-contact">
             <strong>Charmed Code</strong>
             <br />
-            Operated by 2734539 Alberta Ltd.
+            {t("Operated by 2734539 Alberta Ltd.")}
             <br />
             Alberta, Canada
           </p>
           <p>
-            <strong>Email:</strong>{' '}
+            <strong>{t("Email:")}</strong>{' '}
             <a href="mailto:info@charmedcode.ca">info@charmedcode.ca</a>
           </p>
         </section>
@@ -510,17 +495,18 @@ export function PrivacyModal({ onClose, restoreRef }) {
 }
 
 export function ProjectModal({ project, onClose, restoreRef }) {
+  const { t } = useLanguage()
   const Preview = previews[project.id]
   return (
-    <Shell title={project.name} kicker="Featured work" onClose={onClose} restoreRef={restoreRef} wide>
+    <Shell title={project.name} kicker={t("Featured work")} onClose={onClose} restoreRef={restoreRef} wide>
       <div className="project-modal">
         <Preview />
-        <p className="project-tags">{project.tags}</p>
-        <p>{project.summary}</p>
+        <p className="project-tags">{t(project.tags)}</p>
+        <p>{t(project.summary)}</p>
         {project.url && (
           <p>
             <a className="project-link" href={project.url} target="_blank" rel="noreferrer">
-              Visit the site
+              {t("Visit the site")}
             </a>
           </p>
         )}

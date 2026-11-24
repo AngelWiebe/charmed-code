@@ -1,3 +1,4 @@
+import { useLanguage } from '../language'
 import { useEffect, useRef, useState } from 'react'
 import { projects } from '../data'
 import { previews } from './Marks'
@@ -5,6 +6,7 @@ import { previews } from './Marks'
 const crescentArc = 'M 27 4 C 10 5 5 23 16 34 C 23 41 35 39 41 32'
 
 export default function Work({ onOpen, visits }) {
+  const { t } = useLanguage()
   const ornamentRef = useRef(null)
   const [tracedVisit, setTracedVisit] = useState(0)
 
@@ -37,7 +39,7 @@ export default function Work({ onOpen, visits }) {
     <section className="work" id="work" aria-labelledby="work-title">
       <div className="wrap">
         <div className="work-head">
-          <h2 id="work-title" className="nav-target journey-heading" tabIndex={-1}>Featured Projects</h2>
+          <h2 id="work-title" className="nav-target journey-heading" tabIndex={-1}>{t("Featured Projects")}</h2>
           <div ref={ornamentRef} className="work-ornament" aria-hidden="true">
             <svg key={tracedVisit} className={tracing ? 'is-tracing' : undefined} viewBox="0 0 48 44">
               <path className="work-crescent" d={crescentArc} pathLength="1" />
@@ -56,9 +58,9 @@ export default function Work({ onOpen, visits }) {
               <article key={project.id} className="work-card" aria-labelledby={titleId}>
                 <Preview />
                 <div className="work-card-copy">
-                  <p className="work-feature-tags">{project.tags}</p>
+                  <p className="work-feature-tags">{t(project.tags)}</p>
                   <h3 id={titleId}>{project.name}</h3>
-                  <p className="work-summary">{project.summary}</p>
+                  <p className="work-summary">{t(project.summary)}</p>
                   <button
                     className="btn btn-line journey-button"
                     type="button"
@@ -66,7 +68,7 @@ export default function Work({ onOpen, visits }) {
                     aria-describedby={titleId}
                     onClick={(event) => onOpen(project, event)}
                   >
-                    Explore the project
+                    {t("Explore the project")}
                   </button>
                 </div>
               </article>

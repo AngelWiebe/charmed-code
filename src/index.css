@@ -1560,3 +1560,36 @@ html.is-scroll-locked body {
   .work-card:hover,
   .btn-gold:hover { transform: none; }
 }
+
+.language-switch {
+  min-height: 44px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #ffdd9b;
+  cursor: pointer;
+  font: inherit;
+  white-space: nowrap;
+}
+
+.language-switch:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+@media (min-width: 1001px) {
+  .header-actions {
+    gap: clamp(12px, 1.65vw, 28px);
+  }
+
+  .header-actions nav ul {
+    gap: clamp(10px, 1.6vw, 26px);
+  }
+}
+
+@media (max-width: 1000px) {
+  .language-switch {
+    align-self: center;
+  }
+}

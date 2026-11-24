@@ -1,9 +1,10 @@
+import { useLanguage } from '../language'
 import { useEffect } from 'react'
 import castleMobile from '../assets/journey-scene-mobile.webp'
 import castle from '../assets/journey-scene.webp'
 import { experience } from '../data'
 
-export function useCastleMotion(ref) {
+export function useCastleMotion(ref, locale) {
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: no-preference)')
     let active = true
@@ -47,7 +48,7 @@ export function useCastleMotion(ref) {
       preference.removeEventListener('change', syncMotion)
       motion?.revert()
     }
-  }, [ref])
+  }, [ref, locale])
 }
 
 export function CastleValley({ children }) {
@@ -63,18 +64,19 @@ export function CastleValley({ children }) {
 }
 
 export function Experience() {
+  const { t } = useLanguage()
   return (
     <section className="castle-courtyard" id="experience" aria-labelledby="experience-title">
       <div className="wrap experience-panel">
         <div className="experience-intro">
-          <h2 id="experience-title" className="nav-target" tabIndex={-1}>Notable Experience</h2>
-          <p>Past professional work on e-commerce, marketing, and trading platforms.</p>
+          <h2 id="experience-title" className="nav-target" tabIndex={-1}>{t("Notable Experience")}</h2>
+          <p>{t("Past professional work on e-commerce, marketing, and trading platforms.")}</p>
         </div>
         <ul className="experience-grid">
           {experience.map(({ name, detail, logo }) => (
             <li key={name}>
               <h3><img src={logo} alt={name} loading="lazy" /></h3>
-              <p>{detail}</p>
+              <p>{t(detail)}</p>
             </li>
           ))}
         </ul>
