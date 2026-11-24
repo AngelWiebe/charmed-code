@@ -26,10 +26,12 @@ jobs:
           node-version: '22'
           cache: npm
       - uses: actions/configure-pages@v5
+        id: pages
       - run: npm ci
-      - run: npm run build
+      - run: npm run build -- --base "${PAGES_BASE_PATH%/}/"
         env:
-          SITE_ORIGIN: https://charmedcode.ca
+          SITE_ORIGIN: ${{ steps.pages.outputs.origin }}
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist

@@ -15,14 +15,16 @@ function readSiteOrigin(value) {
 const siteOrigin = readSiteOrigin(process.env.SITE_ORIGIN)
 
 function seoOrigin() {
-  const canonical = siteOrigin ? `${siteOrigin}/` : '/'
-  const image = siteOrigin ? `${siteOrigin}/og.jpg` : '/og.jpg'
+  let canonical
+  let image
   let outDir = 'dist'
 
   return {
     name: 'seo-origin',
     configResolved(config) {
       outDir = path.resolve(config.root, config.build.outDir)
+      canonical = `${siteOrigin}${config.base}`
+      image = `${canonical}og.jpg`
     },
     transformIndexHtml(html) {
       return html.replaceAll('%CANONICAL%', canonical).replaceAll('%OG_IMAGE%', image)
@@ -50,7 +52,7 @@ function seoOrigin() {
       if (current.includes('Sitemap:')) return
       const base = current.endsWith('\n') ? current : `${current}\n`
       fs.mkdirSync(path.dirname(robotsPath), { recursive: true })
-      fs.writeFileSync(robotsPath, `${base}\nSitemap: ${siteOrigin}/sitemap.xml\n`)
+      fs.writeFileSync(robotsPath, `${base}\nSitemap: ${canonical}sitemap.xml\n`)
     },
   }
 }
