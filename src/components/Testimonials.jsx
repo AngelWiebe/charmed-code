@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { testimonials } from '../data'
-import { Botanical } from './Marks'
 
 export default function Testimonials() {
   const [index, setIndex] = useState(0)
@@ -36,23 +35,17 @@ export default function Testimonials() {
   }
 
   return (
-    <section className="testimonials" aria-roledescription="carousel" aria-labelledby="kind-words-title" onKeyDown={onKeyDown}>
-      <Botanical className="botanical botanical-left" />
-      <Botanical className="botanical botanical-right" />
+    <section id="kind-words" className="testimonials" aria-roledescription="carousel" aria-labelledby="kind-words-title" onKeyDown={onKeyDown}>
       <div className="carousel">
-        <h2 className="section-kicker" id="kind-words-title">Kind words</h2>
+        <h2 className="section-kicker nav-target" id="kind-words-title" tabIndex={-1}>Kind words</h2>
         <div className="quote-wrap">
-          <button className="arrow arrow-prev" type="button" onClick={() => step(-1)} aria-label="Previous testimonial">
-            <span aria-hidden="true">‹</span>
-          </button>
+          <button className="arrow arrow-prev" type="button" onClick={() => step(-1)} aria-label="Previous testimonial" />
           <blockquote ref={quoteRef} className="quote" aria-live="polite" aria-atomic="true">
             <p>“{item.quote}”</p>
             <footer>— {item.name}</footer>
             <p className="sr-only">Testimonial {index + 1} of {testimonials.length}</p>
           </blockquote>
-          <button className="arrow arrow-next" type="button" onClick={() => step(1)} aria-label="Next testimonial">
-            <span aria-hidden="true">›</span>
-          </button>
+          <button className="arrow arrow-next" type="button" onClick={() => step(1)} aria-label="Next testimonial" />
         </div>
         <p className="quote-count" aria-hidden="true">{index + 1} of {testimonials.length}</p>
         <div className="dots" role="group" aria-label="Choose a testimonial">

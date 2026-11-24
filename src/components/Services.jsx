@@ -1,28 +1,19 @@
 import { services } from '../data'
-import { Star } from './Marks'
+import banner from '../assets/journey-banner.webp'
 
 export default function Services() {
   return (
-    <section className="services" id="services" aria-labelledby="services-title">
-      <Star className="spark spark-a" />
-      <Star className="spark spark-b" />
-      <Star className="spark spark-c" />
-      <Star className="spark spark-d" />
+    <section className="services castle-services" id="services" aria-labelledby="services-title">
       <div className="wrap">
-        <div className="services-head">
-          <p className="section-kicker">What we do</p>
-          <h2 id="services-title" className="nav-target" tabIndex={-1}>Websites with a little more wonder.</h2>
-          <p>
-            We design and develop custom websites, web applications, and digital experiences that
-            are as strategic as they are beautiful — helping purposeful brands grow online.
-          </p>
-        </div>
-        <ul className="services-grid">
+        <h2 id="services-title" className="nav-target journey-heading" tabIndex={-1}>Our Services</h2>
+        <ul className="service-banners" aria-label="Development and consulting services">
           {services.map((service) => (
-            <li key={service.title} className="service">
-              <img src={service.icon} loading="lazy" alt="" />
-              <h3>{service.title}</h3>
-              <p>{service.copy}</p>
+            <li key={service.title} className="service-banner">
+              <img className="service-banner-cloth" src={banner} alt="" loading="lazy" />
+              <div className="service-banner-copy">
+                <img src={service.icon} width="44" height="44" loading="lazy" alt="" />
+                <h3>{service.title}</h3>
+              </div>
             </li>
           ))}
         </ul>

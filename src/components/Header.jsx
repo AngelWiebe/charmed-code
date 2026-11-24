@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import logo from '../assets/logo.webp'
+import { navigationLinks } from '../data'
 
 function pageScroll() {
   const { body } = document
@@ -10,13 +11,6 @@ function pageScroll() {
   return window.scrollY
 }
 
-const links = [
-  { id: 'top', label: 'Home' },
-  { id: 'services', label: 'Services' },
-  { id: 'about', label: 'About' },
-  { id: 'work', label: 'Our Work' },
-]
-
 export default function Header({ onNavigate, onContact, inert }) {
   const [solid, setSolid] = useState(false)
   const [active, setActive] = useState('top')
@@ -26,14 +20,12 @@ export default function Header({ onNavigate, onContact, inert }) {
   const headerRef = useRef(null)
 
   useEffect(() => {
-    const ids = ['top', 'services', 'about', 'work']
-
     const update = () => {
       const scrollY = pageScroll()
       setSolid(scrollY > 24)
 
       if (pinned.current) {
-        const anchor = document.getElementById(pinned.current)?.querySelector('.section-kicker')
+        const anchor = document.getElementById(pinned.current)?.querySelector('.nav-target')
           ?? document.getElementById(pinned.current)
         const offset = Number.parseFloat(
           getComputedStyle(document.documentElement).getPropertyValue('--nav-scroll-offset'),
@@ -50,7 +42,7 @@ export default function Header({ onNavigate, onContact, inert }) {
 
       const line = scrollY + 160
       let current = 'top'
-      for (const id of ids) {
+      for (const { id } of navigationLinks) {
         const section = document.getElementById(id)
         if (!section) continue
         const top = section.getBoundingClientRect().top + scrollY
@@ -85,8 +77,15 @@ export default function Header({ onNavigate, onContact, inert }) {
         toggleRef.current?.focus()
       }
     }
+    const onOutsidePointerDown = (event) => {
+      if (!headerRef.current?.contains(event.target)) setOpen(false)
+    }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onOutsidePointerDown)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onOutsidePointerDown)
+    }
   }, [open])
 
   function navigate(id) {
@@ -130,7 +129,7 @@ export default function Header({ onNavigate, onContact, inert }) {
       <div className={open ? 'header-actions is-open' : 'header-actions'} id="site-nav">
         <nav aria-label="Primary">
           <ul>
-            {links.map((link) => (
+            {navigationLinks.map((link) => (
               <li key={link.id}>
                 <a
                   className={active === link.id ? 'nav-link is-active' : 'nav-link'}

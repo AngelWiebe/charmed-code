@@ -207,10 +207,14 @@ export function ContactModal({ onClose, restoreRef }) {
     setSubmitError('')
     const next = {}
     if (!values.name.trim()) next.name = 'Please enter your name.'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) {
+    if (!values.email.trim()) {
+      next.email = 'Please enter your email.'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) {
       next.email = 'Please enter a valid email.'
     }
-    if (values.message.trim().length < 10) {
+    if (!values.message.trim()) {
+      next.message = 'Please enter a project description.'
+    } else if (values.message.trim().length < 10) {
       next.message = 'Please write at least 10 characters about your project.'
     }
     setErrors(next)
@@ -262,7 +266,7 @@ export function ContactModal({ onClose, restoreRef }) {
       ) : (
         <form className="contact-form" action="https://formspree.io/f/xppdrney" method="post" onSubmit={submit} noValidate>
           <div className="field">
-            <label htmlFor={nameId}>Name</label>
+            <label htmlFor={nameId}>Name <span aria-hidden="true">(required)</span></label>
             <input
               ref={nameRef}
               id={nameId}
@@ -270,7 +274,7 @@ export function ContactModal({ onClose, restoreRef }) {
               value={values.name}
               onChange={update}
               autoComplete="name"
-              aria-required="true"
+              required
               aria-invalid={errors.name ? 'true' : undefined}
               aria-describedby={errors.name ? nameErrorId : undefined}
               data-autofocus
@@ -278,7 +282,7 @@ export function ContactModal({ onClose, restoreRef }) {
             {errors.name && <p id={nameErrorId} className="field-error" role="alert">{errors.name}</p>}
           </div>
           <div className="field">
-            <label htmlFor={emailId}>Email</label>
+            <label htmlFor={emailId}>Email <span aria-hidden="true">(required)</span></label>
             <input
               ref={emailRef}
               id={emailId}
@@ -287,23 +291,24 @@ export function ContactModal({ onClose, restoreRef }) {
               value={values.email}
               onChange={update}
               autoComplete="email"
-              aria-required="true"
+              required
               aria-invalid={errors.email ? 'true' : undefined}
               aria-describedby={errors.email ? emailErrorId : undefined}
             />
             {errors.email && <p id={emailErrorId} className="field-error" role="alert">{errors.email}</p>}
           </div>
           <div className="field">
-            <label htmlFor={messageId}>Project</label>
+            <label htmlFor={messageId}>Project description <span aria-hidden="true">(required)</span></label>
             <p id={messageHintId} className="field-hint">At least 10 characters.</p>
             <textarea
               ref={messageRef}
               id={messageId}
               name="message"
               rows="5"
+              minLength={10}
               value={values.message}
               onChange={update}
-              aria-required="true"
+              required
               aria-invalid={errors.message ? 'true' : undefined}
               aria-describedby={errors.message ? `${messageHintId} ${messageErrorId}` : messageHintId}
             />

@@ -14,13 +14,18 @@ test('contact dialog validates input and restores keyboard focus when closed', a
     await route.abort()
   })
   await page.goto('/')
-  const trigger = page.getByRole('button', { name: 'Let’s Create Something Magical' })
+  const trigger = page.locator('.hero').getByRole('button', { name: 'Get in Touch' })
   await trigger.focus()
   await page.keyboard.press('Enter')
 
   const dialog = page.getByRole('dialog', { name: 'Tell us about your idea.' })
   const name = dialog.getByRole('textbox', { name: 'Name' })
+  const email = dialog.getByRole('textbox', { name: 'Email' })
+  const description = dialog.getByRole('textbox', { name: 'Project description' })
   const send = dialog.getByRole('button', { name: 'Send message' })
+  for (const field of [name, email, description]) {
+    await expect(field).toHaveAttribute('required', '')
+  }
   await expect(name).toBeFocused()
   await page.keyboard.press('Shift+Tab')
   await expect(dialog.getByRole('button', { name: 'Close dialog' })).toBeFocused()
@@ -30,6 +35,14 @@ test('contact dialog validates input and restores keyboard focus when closed', a
 
   await expect(dialog.getByText('Please enter your name.')).toBeVisible()
   await expect(name).toBeFocused()
+  await name.fill(inquiry.name)
+  await send.click()
+  await expect(dialog.getByText('Please enter your email.')).toBeVisible()
+  await expect(email).toBeFocused()
+  await email.fill(inquiry.email)
+  await send.click()
+  await expect(dialog.getByText('Please enter a project description.')).toBeVisible()
+  await expect(description).toBeFocused()
   expect(requests).toBe(0)
   await page.keyboard.press('Escape')
   await expect(dialog).toBeHidden()
@@ -47,12 +60,12 @@ test('contact submission keeps the inquiry after failure and confirms after retr
     })
   })
   await page.goto('/')
-  await page.getByRole('button', { name: 'Let’s Create Something Magical' }).click()
+  await page.locator('.hero').getByRole('button', { name: 'Get in Touch' }).click()
 
   const dialog = page.getByRole('dialog')
   const name = dialog.getByRole('textbox', { name: 'Name' })
   const email = dialog.getByRole('textbox', { name: 'Email' })
-  const project = dialog.getByRole('textbox', { name: 'Project' })
+  const project = dialog.getByRole('textbox', { name: 'Project description' })
   const send = dialog.getByRole('button', { name: 'Send message' })
   await name.fill(inquiry.name)
   await email.fill(inquiry.email)
@@ -89,11 +102,11 @@ test('contact submission disables sending while a request is pending', async ({ 
   })
 
   await page.goto('/')
-  await page.getByRole('button', { name: 'Let’s Create Something Magical' }).click()
+  await page.locator('.hero').getByRole('button', { name: 'Get in Touch' }).click()
   const dialog = page.getByRole('dialog')
   await dialog.getByRole('textbox', { name: 'Name' }).fill(inquiry.name)
   await dialog.getByRole('textbox', { name: 'Email' }).fill(inquiry.email)
-  await dialog.getByRole('textbox', { name: 'Project' }).fill(inquiry.message)
+  await dialog.getByRole('textbox', { name: 'Project description' }).fill(inquiry.message)
 
   try {
     await dialog.getByRole('button', { name: 'Send message' }).click()
@@ -140,11 +153,11 @@ test('contact submission times out and preserves the draft', async ({ page }) =>
   })
 
   await page.goto('/')
-  await page.getByRole('button', { name: 'Let’s Create Something Magical' }).click()
+  await page.locator('.hero').getByRole('button', { name: 'Get in Touch' }).click()
   const dialog = page.getByRole('dialog')
   const name = dialog.getByRole('textbox', { name: 'Name' })
   const email = dialog.getByRole('textbox', { name: 'Email' })
-  const project = dialog.getByRole('textbox', { name: 'Project' })
+  const project = dialog.getByRole('textbox', { name: 'Project description' })
   const send = dialog.getByRole('button', { name: 'Send message' })
   await name.fill(inquiry.name)
   await email.fill(inquiry.email)
@@ -160,4 +173,15 @@ test('contact submission times out and preserves the draft', async ({ page }) =>
   } finally {
     release()
   }
+})
+
+test('mobile contact form fits on a small screen before the keyboard opens', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.goto('/')
+  await page.locator('.hero').getByRole('button', { name: 'Get in Touch' }).click()
+
+  const dialog = page.getByRole('dialog')
+  await expect(dialog.getByRole('button', { name: 'Send message' })).toBeInViewport({ ratio: 1 })
+  await expect.poll(() => dialog.evaluate((element) => element.scrollHeight - element.clientHeight))
+    .toBe(0)
 })

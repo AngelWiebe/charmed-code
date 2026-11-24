@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import Services from './components/Services'
+import { CastleValley, Experience, useCastleMotion } from './components/CastleJourney'
 import Approach from './components/Approach'
 import Work from './components/Work'
 import Testimonials from './components/Testimonials'
@@ -13,6 +14,9 @@ export default function App() {
   const [storyOpen, setStoryOpen] = useState(false)
   const [privacyOpen, setPrivacyOpen] = useState(false)
   const [project, setProject] = useState(null)
+  const [workVisits, setWorkVisits] = useState(0)
+  const mainRef = useRef(null)
+  useCastleMotion(mainRef)
   const restoreRef = useRef(null)
   const modalOpen = contactOpen || storyOpen || privacyOpen || Boolean(project)
 
@@ -39,16 +43,18 @@ export default function App() {
 
   const navigate = useCallback((target, { focus = false } = {}) => {
     const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+    if (target === 'work') setWorkVisits((visits) => visits + 1)
     if (target === 'top') {
       window.scrollTo({ top: 0, behavior })
     } else {
       const section = document.getElementById(target)
-      const anchor = section?.querySelector('.section-kicker') ?? section
+      const anchor = section?.querySelector('.nav-target') ?? section
       if (anchor) {
         const offset = Number.parseFloat(
           getComputedStyle(document.documentElement).getPropertyValue('--nav-scroll-offset'),
         ) || 94
-        const top = anchor.getBoundingClientRect().top + window.scrollY - offset
+        const extraClearance = target === 'experience' ? 17 : 0
+        const top = anchor.getBoundingClientRect().top + window.scrollY - offset - extraClearance
         window.scrollTo({ top: Math.max(0, top), behavior })
       }
     }
@@ -66,14 +72,17 @@ export default function App() {
         Skip to main content
       </a>
       <Header inert={modalOpen || undefined} onNavigate={navigate} onContact={openContact} />
-      <main id="main" inert={modalOpen || undefined}>
-        <Hero onContact={openContact} />
-        <Services />
-        <Approach onStory={openStory} />
-        <Work onOpen={openProject} />
-        <Testimonials />
-        <Cta onContact={openContact} onPrivacy={openPrivacy} />
+      <main ref={mainRef} id="main" inert={modalOpen || undefined}>
+        <Hero onContact={openContact} onNavigate={navigate} />
+        <CastleValley>
+          <Services />
+          <Approach onStory={openStory} />
+          <Experience />
+          <Work onOpen={openProject} visits={workVisits} />
+          <Testimonials />
+        </CastleValley>
       </main>
+      <Cta inert={modalOpen || undefined} onNavigate={navigate} onContact={openContact} onPrivacy={openPrivacy} />
       {contactOpen && <ContactModal onClose={closeContact} restoreRef={restoreRef} />}
       {storyOpen && <StoryModal onClose={closeStory} restoreRef={restoreRef} />}
       {privacyOpen && <PrivacyModal onClose={closePrivacy} restoreRef={restoreRef} />}
