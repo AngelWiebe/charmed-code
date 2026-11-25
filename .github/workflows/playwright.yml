@@ -11,7 +11,21 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            browser: chromium
+          - os: ubuntu-latest
+            browser: firefox
+          - os: macos-latest
+            browser: webkit
+          - os: windows-latest
+            browser: chromium
+    runs-on: ${{ matrix.os }}
+    env:
+      PLAYWRIGHT_BROWSER: ${{ matrix.browser }}
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
@@ -22,5 +36,8 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      - if: runner.os == 'Linux'
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - if: runner.os != 'Linux'
+        run: npx playwright install ${{ matrix.browser }}
       - run: npm test

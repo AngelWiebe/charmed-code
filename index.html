@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="%LANGUAGE%">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -8,39 +8,40 @@
       media="(max-width: 720px)" fetchpriority="high" />
     <meta
       name="description"
-      content="Charmed Code is a web design and development studio in Alberta. We build custom websites, web and mobile apps, and Shopify integrations."
+      content="%DESCRIPTION%"
     />
     <link rel="canonical" href="%CANONICAL%" />
+    %LANGUAGE_ALTERNATES%
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Charmed Code" />
-    <meta property="og:locale" content="en_CA" />
-    <meta property="og:title" content="Charmed Code | Web Design and Development in Alberta" />
+    <meta property="og:locale" content="%SOCIAL_LOCALE%" />
+    <meta property="og:title" content="%TITLE%" />
     <meta
       property="og:description"
-      content="Charmed Code is a web design and development studio in Alberta. We build custom websites, web and mobile apps, and Shopify integrations."
+      content="%DESCRIPTION%"
     />
     <meta property="og:url" content="%CANONICAL%" />
     <meta property="og:image" content="%OG_IMAGE%" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="A moonlit desk with a laptop, looking out on a castle across the water." />
+    <meta property="og:image:alt" content="%IMAGE_ALT%" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Charmed Code | Web Design and Development in Alberta" />
+    <meta name="twitter:title" content="%TITLE%" />
     <meta
       name="twitter:description"
-      content="Charmed Code is a web design and development studio in Alberta. We build custom websites, web and mobile apps, and Shopify integrations."
+      content="%DESCRIPTION%"
     />
     <meta name="twitter:image" content="%OG_IMAGE%" />
-    <meta name="twitter:image:alt" content="A moonlit desk with a laptop, looking out on a castle across the water." />
+    <meta name="twitter:image:alt" content="%IMAGE_ALT%" />
     <meta name="theme-color" content="#0e1430" />
-    <title>Charmed Code | Web Design and Development in Alberta</title>
+    <title>%TITLE%</title>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Charmed Code",
         "legalName": "2734539 Alberta Ltd.",
-        "description": "Charmed Code is a web design and development studio in Alberta. We build custom websites, web and mobile apps, and Shopify integrations.",
+        "description": "%DESCRIPTION%",
         "areaServed": {
           "@type": "AdministrativeArea",
           "name": "Alberta"
@@ -50,7 +51,7 @@
           "addressRegion": "AB",
           "addressCountry": "CA"
         },
-        "url": "%CANONICAL%",
+        "url": "%ENGLISH_URL%",
         "image": "%OG_IMAGE%"
       }
     </script>

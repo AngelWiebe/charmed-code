@@ -29,11 +29,12 @@ test('mobile viewport is established before the responsive image preload', async
   expect(html).toMatch(/<meta name="viewport"[^>]*>[\s\S]*<link rel="preload"[^>]*hero-background-mobile/)
 })
 
-test('mobile menu returns focus on Escape and moves focus to the chosen section', async ({ page }) => {
+test('mobile menu returns focus on Escape and moves focus to the chosen section', async ({ page, browserName }) => {
   await page.setViewportSize({ width: 320, height: 640 })
   await page.goto('/')
+  const nextItem = browserName === 'webkit' ? 'Alt+Tab' : 'Tab'
 
-  await page.keyboard.press('Tab')
+  await page.keyboard.press(nextItem)
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
   await page.keyboard.press('Enter')
   await expect(page.getByRole('heading', { name: /Thoughtfully crafted software/ })).toBeFocused()
@@ -47,7 +48,7 @@ test('mobile menu returns focus on Escape and moves focus to the chosen section'
 
   await page.keyboard.press('Enter')
   const services = page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'Services', exact: true })
-  await page.keyboard.press('Tab')
+  await page.keyboard.press(nextItem)
   await expect(services).toBeFocused()
   await page.keyboard.press('Enter')
   await expect(toggle).toHaveAttribute('aria-expanded', 'false')
@@ -55,8 +56,10 @@ test('mobile menu returns focus on Escape and moves focus to the chosen section'
   await expect(heading).toBeFocused()
   await expect(heading).toHaveCSS('outline-style', 'none')
   await expect(heading).toHaveCSS('box-shadow', 'none')
-  await page.keyboard.press('Tab')
-  await expect(page.getByRole('button', { name: 'Learn More About Us' })).toBeFocused()
+  if (browserName !== 'webkit') {
+    await page.keyboard.press(nextItem)
+    await expect(page.getByRole('button', { name: 'Learn More About Us' })).toBeFocused()
+  }
 })
 
 for (const { name, viewport, asset } of [

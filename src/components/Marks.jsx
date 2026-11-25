@@ -2,32 +2,6 @@ import trueDepthPreview from '../assets/true-depth-preview.webp'
 import dlrLogo from '../assets/dlr-logo.webp'
 import dlrHandshake from '../assets/dlr-handshake.webp'
 
-export function Star({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M12 0l1.6 8.8L22 12l-8.4 3.2L12 24l-1.6-8.8L2 12l8.4-3.2z"
-      />
-    </svg>
-  )
-}
-
-function MockBar({ dark = false, links }) {
-  return (
-    <div className={dark ? 'mock-bar is-dark' : 'mock-bar'}>
-      <span className="mock-dots" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
-      {links.map((link) => (
-        <span key={link}>{link}</span>
-      ))}
-    </div>
-  )
-}
-
 function TrueDepthPreview() {
   return (
     <div className="mock mock-true-depth" aria-hidden="true">
@@ -36,7 +10,7 @@ function TrueDepthPreview() {
   )
 }
 
-export function DlrPreview() {
+function DlrPreview() {
   return (
     <div className="mock mock-dlr" aria-hidden="true">
       <div className="dlr-bar">

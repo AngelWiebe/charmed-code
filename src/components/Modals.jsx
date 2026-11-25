@@ -115,19 +115,12 @@ function useModal(onClose, restoreRef) {
         node.focus()
         return
       }
-      const first = current[0]
-      const last = current[current.length - 1]
-      const inside = node.contains(document.activeElement)
-      if (!inside) {
-        event.preventDefault()
-        first.focus()
-      } else if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first.focus()
-      }
+      const index = current.indexOf(document.activeElement)
+      const nextIndex = event.shiftKey
+        ? (index <= 0 ? current.length - 1 : index - 1)
+        : (index + 1) % current.length
+      event.preventDefault()
+      current[nextIndex].focus()
     }
 
     document.addEventListener('keydown', onKey)
@@ -231,24 +224,27 @@ export function ContactModal({ onClose, restoreRef }) {
     submittingRef.current = true
     setSubmitting(true)
 
+    const controller = new AbortController()
+    const timeout = window.setTimeout(() => controller.abort(), 15_000)
     try {
       const response = await fetch(form.action, {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body,
-        signal: AbortSignal.timeout(15_000),
+        signal: controller.signal,
       })
 
       if (response.ok) setSent(true)
       else if (response.status === 429) setSubmitError(t("Too many attempts. Please wait a minute and try again."))
       else setSubmitError(t("Your message could not be sent. Please try again."))
-    } catch (error) {
+    } catch {
       setSubmitError(
-        error.name === 'TimeoutError'
+        controller.signal.aborted
           ? t("Sending timed out. We couldn’t confirm delivery. Your message is still here if you want to try again.")
           : t("Your message could not be sent. Please try again."),
       )
     } finally {
+      window.clearTimeout(timeout)
       submittingRef.current = false
       setSubmitting(false)
     }

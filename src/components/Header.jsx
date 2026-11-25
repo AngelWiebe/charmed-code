@@ -1,4 +1,5 @@
 import { useLanguage } from '../language'
+import { languagePath } from '../../site-locales.js'
 import { useEffect, useRef, useState } from 'react'
 import logo from '../assets/logo.webp'
 import { navigationLinks } from '../data'
@@ -13,7 +14,8 @@ function pageScroll() {
 }
 
 export default function Header({ onNavigate, onContact, inert }) {
-  const { locale, setLocale, t } = useLanguage()
+  const { locale, t } = useLanguage()
+  const alternateLocale = locale === 'en' ? 'fr-CA' : 'en'
   const [solid, setSolid] = useState(false)
   const [active, setActive] = useState('top')
   const [open, setOpen] = useState(false)
@@ -154,14 +156,14 @@ export default function Header({ onNavigate, onContact, inert }) {
         }}>
           {t("Get in Touch")}
         </button>
-        <button
+        <a
           className="language-switch"
-          type="button"
-          lang={locale === 'en' ? 'fr-CA' : 'en'}
-          onClick={() => setLocale(locale === 'en' ? 'fr-CA' : 'en')}
+          href={languagePath(import.meta.env.BASE_URL, alternateLocale)}
+          lang={alternateLocale}
+          hrefLang={alternateLocale}
         >
           {locale === 'en' ? 'Français' : 'English'}
-        </button>
+        </a>
       </div>
     </header>
   )

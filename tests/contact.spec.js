@@ -51,6 +51,7 @@ test('contact dialog validates input and restores keyboard focus when closed', a
 
 test('contact submission keeps the inquiry after failure and confirms after retry succeeds', async ({ page }) => {
   const submissions = []
+  await page.addInitScript(() => { AbortSignal.timeout = undefined })
   await page.route('https://formspree.io/**', async (route) => {
     const request = route.request()
     submissions.push(request)
@@ -140,10 +141,12 @@ test('closing contact opened from the mobile menu returns focus to the menu togg
   await expect(toggle).toBeFocused()
 })
 
-test('contact submission times out and preserves the draft', async ({ page }) => {
+test('contact submission times out and preserves the draft without AbortSignal.timeout', async ({ page }) => {
   await page.addInitScript(() => {
-    const timeout = AbortSignal.timeout.bind(AbortSignal)
-    AbortSignal.timeout = () => timeout(1_000)
+    AbortSignal.timeout = undefined
+    const setTimeout = window.setTimeout.bind(window)
+    window.setTimeout = (callback, delay, ...args) =>
+      setTimeout(callback, delay === 15_000 ? 1_000 : delay, ...args)
   })
   let release
   const pending = new Promise((resolve) => { release = resolve })

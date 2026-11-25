@@ -93,6 +93,6 @@ function Site() {
   )
 }
 
-export default function App() {
-  return <LanguageProvider><Site /></LanguageProvider>
+export default function App({ locale = 'en' }) {
+  return <LanguageProvider locale={locale}><Site /></LanguageProvider>
 }
